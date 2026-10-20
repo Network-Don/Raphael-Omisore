@@ -646,6 +646,383 @@
             }
         }
 
+        /* ── Labs & Walkthroughs Section ────────────────────────────── */
+
+        /* Section-level outer toggle button */
+        #labs-toggle-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--space-2);
+            margin: var(--space-6) auto 0;
+            padding: var(--space-3) var(--space-8);
+            background: transparent;
+            border: 1px solid var(--accent-primary);
+            color: var(--accent-primary);
+            border-radius: var(--radius-full);
+            font-family: var(--font-main);
+            font-size: var(--text-sm);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all var(--transition-normal);
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        #labs-toggle-btn::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: var(--gradient-accent);
+            opacity: 0;
+            transition: opacity var(--transition-normal);
+            z-index: -1;
+        }
+
+        #labs-toggle-btn:hover {
+            color: #fff;
+            border-color: transparent;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px var(--accent-glow);
+        }
+
+        #labs-toggle-btn:hover::before {
+            opacity: 1;
+        }
+
+        #labs-toggle-btn .labs-toggle-icon {
+            font-size: var(--text-lg);
+            transition: transform var(--transition-normal);
+        }
+
+        #labs-toggle-btn[aria-expanded="true"] .labs-toggle-icon {
+            transform: rotate(180deg);
+        }
+
+        /* Section-level expandable panel */
+        #labs-expandable {
+            overflow: hidden;
+            max-height: 0;
+            transition: max-height 0.6s cubic-bezier(0.4, 0, 0.2, 1),
+                        opacity 0.4s ease;
+            opacity: 0;
+        }
+
+        #labs-expandable.is-open {
+            max-height: 9999px;
+            opacity: 1;
+        }
+
+        /* Labs grid */
+        .labs-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: var(--space-6);
+            margin-top: var(--space-8);
+        }
+
+        @media (max-width: 900px) {
+            .labs-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 600px) {
+            .labs-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Lab card */
+        .lab-card {
+            --text-primary: var(--card-text-primary);
+            --text-secondary: var(--card-text-secondary);
+            background: var(--card-bg);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-xl);
+            overflow: hidden;
+            transition: all var(--transition-normal);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .lab-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--border-hover);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+        }
+
+        /* Thumbnail */
+        .lab-thumb-wrapper {
+            position: relative;
+            width: 100%;
+            padding-bottom: 56.25%; /* 16:9 */
+            overflow: hidden;
+            background: linear-gradient(135deg, #0a0e17 0%, #1e2a3a 100%);
+            flex-shrink: 0;
+        }
+
+        .lab-thumb-img {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            transition: transform var(--transition-normal);
+        }
+
+        .lab-card:hover .lab-thumb-img {
+            transform: scale(1.04);
+        }
+
+        /* Fallback for missing thumbnail */
+        .lab-thumb-fallback {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: var(--space-2);
+            color: rgba(255,255,255,0.35);
+            font-size: var(--text-sm);
+            font-family: var(--font-mono);
+        }
+
+        .lab-thumb-fallback i {
+            font-size: 2.5rem;
+            color: rgba(255,255,255,0.25);
+        }
+
+        /* Play overlay */
+        .lab-play-overlay {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0,0,0,0.25);
+            opacity: 0;
+            transition: opacity var(--transition-normal);
+            text-decoration: none;
+        }
+
+        .lab-card:hover .lab-play-overlay {
+            opacity: 1;
+        }
+
+        .lab-play-icon {
+            width: 52px;
+            height: 52px;
+            background: rgba(255,0,0,0.85);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 1.6rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+            transition: transform var(--transition-fast), background var(--transition-fast);
+        }
+
+        .lab-play-overlay:hover .lab-play-icon {
+            transform: scale(1.12);
+            background: rgba(255,0,0,1);
+        }
+
+        /* Card body */
+        .lab-card-body {
+            padding: var(--space-6);
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            gap: var(--space-2);
+        }
+
+        /* Status badge */
+        .lab-status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            padding: 0.2rem 0.6rem;
+            border-radius: var(--radius-full);
+            font-size: 0.72rem;
+            font-weight: 700;
+            font-family: var(--font-mono);
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            width: fit-content;
+            margin-bottom: var(--space-2);
+        }
+
+        .lab-status-badge.published {
+            background: rgba(34, 197, 94, 0.12);
+            color: #22c55e;
+            border: 1px solid rgba(34, 197, 94, 0.3);
+        }
+
+        .lab-status-badge.coming-soon {
+            background: rgba(251, 191, 36, 0.12);
+            color: #f59e0b;
+            border: 1px solid rgba(251, 191, 36, 0.3);
+        }
+
+        .lab-card-title {
+            font-size: var(--text-base);
+            font-weight: 700;
+            color: var(--text-primary);
+            line-height: 1.35;
+            margin-bottom: 0;
+        }
+
+        /* Tag chips — identical style to existing .badge */
+        .lab-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: var(--space-2);
+            margin-top: var(--space-2);
+        }
+
+        .lab-tag {
+            display: inline-block;
+            padding: 0.2rem 0.6rem;
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            border-radius: var(--radius-full);
+            font-size: 0.72rem;
+            font-family: var(--font-mono);
+            border: 1px solid var(--border-color);
+        }
+
+        /* Watch button */
+        .lab-watch-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--space-2);
+            margin-top: auto;
+            padding-top: var(--space-4);
+            font-size: var(--text-sm);
+            font-weight: 600;
+            color: var(--accent-primary);
+            text-decoration: none;
+            transition: color var(--transition-fast);
+        }
+
+        .lab-watch-btn:hover {
+            color: var(--accent-secondary);
+        }
+
+        /* Per-card expandable story */
+        .lab-story-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            margin-top: var(--space-3);
+            background: none;
+            border: none;
+            padding: 0;
+            font-family: var(--font-main);
+            font-size: var(--text-sm);
+            font-weight: 600;
+            color: var(--accent-primary);
+            cursor: pointer;
+            transition: color var(--transition-fast);
+        }
+
+        .lab-story-btn:hover {
+            color: var(--accent-secondary);
+        }
+
+        .lab-story-btn .lab-story-icon {
+            font-size: 1rem;
+            transition: transform var(--transition-normal);
+        }
+
+        .lab-story-btn[aria-expanded="true"] .lab-story-icon {
+            transform: rotate(180deg);
+        }
+
+        /* Story expandable panel */
+        .lab-story-panel {
+            overflow: hidden;
+            max-height: 0;
+            transition: max-height 0.45s cubic-bezier(0.4, 0, 0.2, 1),
+                        opacity 0.35s ease;
+            opacity: 0;
+        }
+
+        .lab-story-panel.is-open {
+            max-height: 1200px;
+            opacity: 1;
+        }
+
+        .lab-story-inner {
+            padding-top: var(--space-4);
+            border-top: 1px solid var(--border-color);
+            margin-top: var(--space-3);
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-4);
+        }
+
+        .lab-story-block h5 {
+            font-size: var(--text-sm);
+            font-weight: 700;
+            color: var(--accent-primary);
+            margin-bottom: var(--space-2);
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
+        }
+
+        .lab-story-block p {
+            font-size: var(--text-sm);
+            color: var(--text-secondary);
+            line-height: 1.75;
+            margin: 0;
+        }
+
+        /* Channel visit button */
+        .labs-channel-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--space-2);
+            margin: var(--space-8) auto 0;
+            padding: var(--space-3) var(--space-8);
+            background: #ff0000;
+            color: #fff;
+            border: none;
+            border-radius: var(--radius-full);
+            font-family: var(--font-main);
+            font-size: var(--text-sm);
+            font-weight: 700;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all var(--transition-normal);
+            box-shadow: 0 4px 15px rgba(255, 0, 0, 0.3);
+        }
+
+        .labs-channel-btn:hover {
+            background: #cc0000;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 0, 0, 0.45);
+            color: #fff;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            #labs-expandable,
+            .lab-story-panel,
+            .lab-thumb-img,
+            .lab-play-overlay,
+            .lab-play-icon {
+                transition: none;
+            }
+        }
+
         /* ── Read More / Expandable Panel ──────────────────────────── */
 
         .project-read-more-btn {
@@ -760,6 +1137,7 @@
                 <li><a href="#about" class="nav-link">About</a></li>
                 <li><a href="#skills" class="nav-link">Arsenal</a></li>
                 <li><a href="#projects" class="nav-link">Projects</a></li>
+                <li><a href="#labs" class="nav-link">Labs</a></li>
                 <li><a href="#experience" class="nav-link">Experience</a></li>
                 <li><a href="#training" class="nav-link">Mentorship</a></li>
                 <li><a href="#contact" class="nav-link">Contact</a></li>
@@ -801,6 +1179,13 @@
                     </a>
                     <a href="mailto:raphaeloomisore@gmail.com" class="btn btn-outline" style="margin: var(--space-2);">
                         <i class='bx bx-envelope'></i> Say Hello
+                    </a>
+                </div>
+                <div class="reveal-left delay-500" style="margin-top: var(--space-4);">
+                    <a href="#labs" id="hero-labs-link" style="font-size: var(--text-sm); color: var(--text-secondary); display: inline-flex; align-items: center; gap: 0.35rem; text-decoration: none; transition: color var(--transition-fast);"
+                        onmouseover="this.style.color='var(--accent-primary)'" onmouseout="this.style.color='var(--text-secondary)'">
+                        <i class='bx bxl-youtube' style="font-size: 1.1rem; color: #ff0000;"></i>
+                        Watch My Labs
                     </a>
                 </div>
             </div>
@@ -1426,6 +1811,58 @@
         </div>
     </section>
 
+    <!-- Labs & Walkthroughs Section -->
+    <section id="labs" class="section" style="padding-top: var(--space-16); padding-bottom: var(--space-16);">
+        <div class="container">
+
+            <!-- Section teaser (always visible) -->
+            <div style="text-align: center;">
+                <h2 class="section-title reveal" style="margin-bottom: var(--space-6);">Labs &amp; Walkthroughs</h2>
+                <p class="reveal delay-100" style="font-size: var(--text-base); color: var(--text-secondary); margin-bottom: var(--space-2);">
+                    Hands-on Microsoft Entra ID security simulations I explain on YouTube.
+                </p>
+                <p class="reveal delay-200" style="font-size: var(--text-sm); color: var(--text-secondary); opacity: 0.7; margin-bottom: var(--space-6);">
+                    3 videos &nbsp;·&nbsp; 5 topics
+                </p>
+
+                <button id="labs-toggle-btn" aria-expanded="false" aria-controls="labs-expandable" class="reveal delay-300">
+                    <span class="labs-toggle-label">View Labs &amp; Walkthroughs</span>
+                    <i class='bx bx-chevron-down labs-toggle-icon'></i>
+                </button>
+            </div>
+
+            <!-- Expandable section content -->
+            <div id="labs-expandable" aria-hidden="true">
+                <div style="padding-top: var(--space-10);">
+
+                    <!-- Subheading & disclaimer -->
+                    <p class="reveal" style="text-align: center; font-size: var(--text-lg); color: var(--text-primary); font-weight: 600; margin-bottom: var(--space-2);">
+                        Real attack scenarios, the controls that stop them, and the lessons behind each one.
+                    </p>
+                    <p class="reveal delay-100" style="text-align: center; font-size: var(--text-sm); color: var(--text-secondary); opacity: 0.7; margin-bottom: 0;">
+                        All demos run in a Microsoft 365 E5 developer tenant. No client or production data is shown.
+                    </p>
+
+                    <!-- Video cards grid -->
+                    <div class="labs-grid" id="labs-grid">
+                        <!-- Cards rendered by JS below -->
+                    </div>
+
+                    <!-- Channel CTA -->
+                    <div style="text-align: center;">
+                        <a href="https://www.youtube.com/@TheNetworkDon" target="_blank" rel="noopener noreferrer"
+                            class="labs-channel-btn reveal">
+                            <i class='bx bxl-youtube'></i>
+                            Visit the channel
+                        </a>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </section>
+
     <!-- Experience Timeline -->
     <section id="experience" class="section">
         <div class="container">
@@ -1539,6 +1976,9 @@
                     knowledge. I coach a cybersecurity cohort on fundamental and advanced cybersecurity concepts,
                     fostering hands-on technical skills and real-world implementation techniques.
                 </p>
+                <p style="margin-top: var(--space-4); font-size: var(--text-sm);">
+                    <a href="#labs" id="mentorship-labs-link" style="color: var(--accent-primary); font-weight: 600;">See the walkthroughs <i class='bx bxs-right-arrow-circle' style="vertical-align: middle; font-size: 0.9rem;"></i></a>
+                </p>
                 <div
                     style="display: flex; gap: var(--space-4); justify-content: center; flex-wrap: wrap; margin-top: var(--space-6);">
                     <div
@@ -1582,7 +2022,7 @@
                         class="contact-icon"><i class='bx bxl-linkedin'></i></a>
                     <a href="https://x.com/Ralph_Omisore" target="_blank" aria-label="Twitter" class="contact-icon"><i
                             class='bx bxl-twitter'></i></a>
-                    <a href="https://www.youtube.com/@TheNetworkDon" target="_blank" aria-label="YouTube"
+                    <a href="https://www.youtube.com/@TheNetworkDon" target="_blank" rel="noopener noreferrer" aria-label="YouTube"
                         class="contact-icon"><i class='bx bxl-youtube'></i></a>
                 </div>
             </div>
@@ -1600,6 +2040,239 @@
     <script src="js/main.js"></script>
     <script>
         document.getElementById('year').textContent = new Date().getFullYear();
+
+        // ── Labs & Walkthroughs ──────────────────────────────────────
+        (function () {
+
+            // ── Data ─────────────────────────────────────────────────
+            var LABS = [
+                {
+                    id: 'lab-1',
+                    title: 'I Simulated a Risky Sign-in (Then Blocked It with Entra ID)',
+                    url: 'https://www.youtube.com/watch?v=tNrxG9NoC-I',
+                    thumb: 'Labs/risky-signin.jpeg',
+                    thumbAlt: 'Thumbnail: I Simulated a Risky Sign-in (Then Blocked It with Entra ID)',
+                    status: 'published',
+                    problem: 'Attackers who steal credentials sign in from unusual places, and many organizations only notice after the damage is done.',
+                    simulated: 'I triggered a risky sign-in against a test account, investigated it under Incidents & alerts in the Microsoft Defender XDR portal, then restricted sign-ins to Nigeria using Conditional Access with a Named Location.',
+                    takeaway: 'The detect, investigate and contain loop, and location-based access control as a Zero Trust layer.',
+                    tags: ['Entra ID', 'Conditional Access', 'Named Locations', 'Defender XDR', 'Risky Sign-ins']
+                },
+                {
+                    id: 'lab-2',
+                    title: 'Lock Microsoft 365 to Your Office IP (Conditional Access Demo)',
+                    url: 'https://www.youtube.com/watch?v=TXLsr27dCVg',
+                    thumb: 'Labs/office-only-ip.jpg',
+                    thumbAlt: 'Thumbnail: Lock Microsoft 365 to Your Office IP (Conditional Access Demo)',
+                    status: 'published',
+                    problem: 'When company resources are reachable from anywhere, stolen credentials work from any country or network.',
+                    simulated: 'I restricted Microsoft 365 access to the office network using Named Locations with trusted public IPs, for two scenarios: a single office, and a company with its HQ in Lagos and a branch in Abuja. Sign-ins from the office succeeded and sign-ins from anywhere else were blocked.',
+                    takeaway: 'How network-location controls shrink the attack surface for single-site and multi-site organizations.',
+                    tags: ['Conditional Access', 'Named Locations', 'Zero Trust', 'Microsoft 365']
+                },
+                {
+                    id: 'lab-3',
+                    title: 'I Gave a Normal User Admin Power for 2 Hours (Entra PIM Demo)',
+                    url: null,
+                    thumb: 'Labs/entra-pim.png',
+                    thumbAlt: 'Thumbnail: I Gave a Normal User Admin Power for 2 Hours (Entra PIM Demo)',
+                    status: 'coming-soon',
+                    problem: 'Standing admin accounts with 24/7 admin rights are high-value targets. If one is phished or compromised, the attacker gets full control.',
+                    simulated: 'Using Privileged Identity Management, I made a standard user eligible for the Helpdesk Administrator role, activated it for 2 hours to reset another user\'s password, and watched the role revoke automatically when the time expired. I also explained how User Administrator, Billing Administrator and Security Administrator roles can be delegated the same way.',
+                    takeaway: 'Least privilege and just-in-time access: admin rights exist only when needed.',
+                    tags: ['Entra PIM', 'Just-in-Time Access', 'Least Privilege', 'Privileged Roles']
+                }
+            ];
+
+            // ── Card builder ─────────────────────────────────────────
+            function buildCard(lab) {
+                var isPublished = lab.status === 'published';
+                var hasUrl = !!lab.url;
+
+                // Status badge
+                var statusClass = isPublished ? 'published' : 'coming-soon';
+                var statusIcon = isPublished ? "bx bxs-circle" : "bx bx-time";
+                var statusText = isPublished ? 'Published' : 'Coming Soon';
+
+                // Thumbnail — always render; onerror shows fallback
+                var thumbHtml =
+                    '<div class="lab-thumb-wrapper">' +
+                        '<img class="lab-thumb-img" src="' + lab.thumb + '"' +
+                            ' alt="' + lab.thumbAlt + '"' +
+                            ' width="640" height="360" loading="lazy"' +
+                            ' onerror="this.style.display=\'none\';this.parentNode.querySelector(\'.lab-thumb-fallback\').style.display=\'flex\';">' +
+                        '<div class="lab-thumb-fallback" style="display:none;">' +
+                            '<i class=\'bx bxl-youtube\'></i>' +
+                            '<span>Thumbnail unavailable</span>' +
+                        '</div>' +
+                        (hasUrl
+                            ? '<a href="' + lab.url + '" target="_blank" rel="noopener noreferrer" class="lab-play-overlay" aria-label="Watch ' + lab.title + ' on YouTube">' +
+                                  '<span class="lab-play-icon"><i class=\'bx bx-play\'></i></span>' +
+                              '</a>'
+                            : '<div class="lab-play-overlay" style="cursor:default; opacity:0.4;">' +
+                                  '<span class="lab-play-icon" style="background:rgba(100,100,100,0.7);"><i class=\'bx bx-time\'></i></span>' +
+                              '</div>') +
+                    '</div>';
+
+                // Tags
+                var tagsHtml = '<div class="lab-tags">' + lab.tags.map(function(t) {
+                    return '<span class="lab-tag">' + t + '</span>';
+                }).join('') + '</div>';
+
+                // Watch button (published only)
+                var watchBtn = (hasUrl && isPublished)
+                    ? '<a href="' + lab.url + '" target="_blank" rel="noopener noreferrer" class="lab-watch-btn">' +
+                          '<i class=\'bx bxl-youtube\'></i> Watch on YouTube' +
+                      '</a>'
+                    : '';
+
+                // Story toggle button
+                var storyBtnId = lab.id + '-story-btn';
+                var storyPanelId = lab.id + '-story-panel';
+                var storyBtn =
+                    '<button class="lab-story-btn" id="' + storyBtnId + '"' +
+                        ' aria-expanded="false" aria-controls="' + storyPanelId + '">' +
+                        'Read the story <i class=\'bx bx-chevron-down lab-story-icon\'></i>' +
+                    '</button>';
+
+                // Story panel
+                var storyPanel =
+                    '<div class="lab-story-panel" id="' + storyPanelId + '" aria-hidden="true">' +
+                        '<div class="lab-story-inner">' +
+                            '<div class="lab-story-block">' +
+                                '<h5><i class=\'bx bx-error-circle\'></i> Problem</h5>' +
+                                '<p>' + lab.problem + '</p>' +
+                            '</div>' +
+                            '<div class="lab-story-block">' +
+                                '<h5><i class=\'bx bx-play-circle\'></i> What I simulated</h5>' +
+                                '<p>' + lab.simulated + '</p>' +
+                            '</div>' +
+                            '<div class="lab-story-block">' +
+                                '<h5><i class=\'bx bx-bulb\'></i> What it shows</h5>' +
+                                '<p>' + lab.takeaway + '</p>' +
+                            '</div>' +
+                        '</div>' +
+                    '</div>';
+
+                // Full card
+                var card =
+                    '<article class="lab-card" id="' + lab.id + '">' +
+                        thumbHtml +
+                        '<div class="lab-card-body">' +
+                            '<span class="lab-status-badge ' + statusClass + '">' +
+                                '<i class=\'' + statusIcon + '\'></i>' + statusText +
+                            '</span>' +
+                            '<h3 class="lab-card-title">' + lab.title + '</h3>' +
+                            tagsHtml +
+                            storyBtn +
+                            storyPanel +
+                            watchBtn +
+                        '</div>' +
+                    '</article>';
+
+                return card;
+            }
+
+            // ── Render cards ─────────────────────────────────────────
+            var grid = document.getElementById('labs-grid');
+            if (grid) {
+                grid.innerHTML = LABS.map(buildCard).join('');
+            }
+
+            // ── Per-card story toggles ────────────────────────────────
+            function initStoryToggle(lab) {
+                var btn   = document.getElementById(lab.id + '-story-btn');
+                var panel = document.getElementById(lab.id + '-story-panel');
+                if (!btn || !panel) return;
+
+                btn.addEventListener('click', function () {
+                    var isOpen = panel.classList.contains('is-open');
+                    if (isOpen) {
+                        panel.classList.remove('is-open');
+                        panel.setAttribute('aria-hidden', 'true');
+                        btn.setAttribute('aria-expanded', 'false');
+                        btn.querySelector('.lab-story-icon').style.transform = '';
+                        // restore label
+                        btn.childNodes[0].textContent = 'Read the story ';
+                    } else {
+                        panel.classList.add('is-open');
+                        panel.setAttribute('aria-hidden', 'false');
+                        btn.setAttribute('aria-expanded', 'true');
+                        btn.childNodes[0].textContent = 'Show less ';
+                    }
+                });
+            }
+
+            LABS.forEach(initStoryToggle);
+
+            // ── Section-level toggle ──────────────────────────────────
+            var sectionBtn   = document.getElementById('labs-toggle-btn');
+            var sectionPanel = document.getElementById('labs-expandable');
+
+            function openLabsSection() {
+                if (!sectionPanel || !sectionBtn) return;
+                sectionPanel.classList.add('is-open');
+                sectionPanel.setAttribute('aria-hidden', 'false');
+                sectionBtn.setAttribute('aria-expanded', 'true');
+                var lbl = sectionBtn.querySelector('.labs-toggle-label');
+                if (lbl) lbl.textContent = 'Hide Labs & Walkthroughs';
+            }
+
+            function closeLabsSection() {
+                if (!sectionPanel || !sectionBtn) return;
+                sectionPanel.classList.remove('is-open');
+                sectionPanel.setAttribute('aria-hidden', 'true');
+                sectionBtn.setAttribute('aria-expanded', 'false');
+                var lbl = sectionBtn.querySelector('.labs-toggle-label');
+                if (lbl) lbl.textContent = 'View Labs & Walkthroughs';
+            }
+
+            if (sectionBtn) {
+                sectionBtn.addEventListener('click', function () {
+                    if (sectionPanel.classList.contains('is-open')) {
+                        closeLabsSection();
+                    } else {
+                        openLabsSection();
+                    }
+                });
+            }
+
+            // Helper: expand section then scroll to #labs
+            function expandAndScroll() {
+                openLabsSection();
+                var target = document.getElementById('labs');
+                if (target) {
+                    setTimeout(function () {
+                        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }, 50);
+                }
+            }
+
+            // Intercept #labs nav link, hero link, mentorship link
+            ['a[href="#labs"]'].forEach(function (sel) {
+                document.querySelectorAll(sel).forEach(function (el) {
+                    el.addEventListener('click', function (e) {
+                        e.preventDefault();
+                        expandAndScroll();
+                    });
+                });
+            });
+
+            // Auto-expand if page loaded with #labs in URL
+            if (window.location.hash === '#labs') {
+                expandAndScroll();
+            }
+
+            // Wire card hover glow (matching existing card behaviour)
+            document.querySelectorAll('.lab-card').forEach(function (card) {
+                card.addEventListener('mousemove', function (e) {
+                    var rect = card.getBoundingClientRect();
+                    card.style.setProperty('--mouse-x', (e.clientX - rect.left) + 'px');
+                    card.style.setProperty('--mouse-y', (e.clientY - rect.top) + 'px');
+                });
+            });
+
+        })();
 
         // Read More / Show Less toggle for the VLAN project card
         (function () {
