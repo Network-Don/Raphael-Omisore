@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://raphael-omisore-ten-sigma.vercel.app/sitemap.xml
