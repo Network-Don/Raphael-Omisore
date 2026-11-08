@@ -51,13 +51,20 @@ document.addEventListener('DOMContentLoaded', () => {
     // 3. Scroll Reveal Animation (Intersection Observer)
     const reveals = document.querySelectorAll('.reveal, .reveal-left, .reveal-right');
     
-    const revealObserver = new IntersectionObserver((entries, observer) => {
+    const revealObserver = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
                 entry.target.classList.add('active');
             } else {
-                // Reset state when element leaves the viewport so it can re-trigger
-                entry.target.classList.remove('active');
+                // Never remove .active while a case-study panel inside this card is open,
+                // because an expanded card is taller than any viewport, so its intersection
+                // ratio will always be below the 0.15 threshold and it would be hidden.
+                const hasOpenPanel =
+                    entry.target.classList.contains('is-expanded') ||
+                    entry.target.querySelector('.is-open') !== null;
+                if (!hasOpenPanel) {
+                    entry.target.classList.remove('active');
+                }
             }
         });
     }, {

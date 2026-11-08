@@ -1102,22 +1102,34 @@
             transform: rotate(180deg);
         }
 
-        /* Collapsible panel — height animation via max-height */
+        /* Collapsible panel — robust CSS grid rows animation */
         .project-expandable {
-            overflow: hidden;
-            max-height: 0;
-            transition: max-height 0.55s cubic-bezier(0.4, 0, 0.2, 1),
+            display: grid;
+            grid-template-rows: 0fr;
+            transition: grid-template-rows 0.55s cubic-bezier(0.4, 0, 0.2, 1),
                         opacity 0.4s ease;
             opacity: 0;
+            visibility: hidden;
         }
 
         .project-expandable.is-open {
-            max-height: 9999px;
+            grid-template-rows: 1fr;
             opacity: 1;
+            visibility: visible;
         }
 
         .project-expandable-inner {
+            overflow: hidden;
+            min-height: 0;
             padding-top: var(--space-6);
+        }
+
+        /* Prevent expanded card from collapsing to opacity: 0 via scroll-reveal */
+        #project-vlan.is-expanded,
+        #project-vlan.active,
+        #project-vlan:has(.is-open) {
+            opacity: 1 !important;
+            transform: none !important;
         }
 
         /* Show Less button — centered, slightly subdued */
@@ -2322,24 +2334,51 @@
             var btn      = document.getElementById('vlan-read-more-btn');
             var lessBtn  = document.getElementById('vlan-show-less-btn');
             var panel    = document.getElementById('vlan-expandable');
+            var card     = document.getElementById('project-vlan');
             if (!btn || !panel) return;
 
+            var scrollTimer = null;
+
             function openPanel() {
+                if (scrollTimer) clearTimeout(scrollTimer);
+                if (card) {
+                    card.classList.add('active', 'is-expanded');
+                }
                 panel.classList.add('is-open');
                 panel.setAttribute('aria-hidden', 'false');
                 btn.setAttribute('aria-expanded', 'true');
                 var label = btn.querySelector('.read-more-label');
                 if (label) label.textContent = 'Show Less';
+
+                // Scroll so the case study heading is visible below the fixed navbar
+                var navbar = document.querySelector('.navbar');
+                var navHeight = navbar ? navbar.offsetHeight : 70;
+                var heading = panel.querySelector('.project-section-heading') || panel;
+                scrollTimer = setTimeout(function () {
+                    var headingRect = heading.getBoundingClientRect();
+                    var targetY = window.scrollY + headingRect.top - navHeight - 16;
+                    window.scrollTo({ top: Math.max(0, targetY), behavior: 'smooth' });
+                }, 150);
             }
 
             function closePanel() {
+                if (scrollTimer) clearTimeout(scrollTimer);
                 panel.classList.remove('is-open');
                 panel.setAttribute('aria-hidden', 'true');
                 btn.setAttribute('aria-expanded', 'false');
                 var label = btn.querySelector('.read-more-label');
                 if (label) label.textContent = 'Read Full Case Study';
-                // Scroll top-read-more-btn back into view smoothly
-                btn.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                if (card) {
+                    card.classList.remove('is-expanded');
+                }
+
+                // Smoothly return to the card below the fixed navbar
+                var navbar = document.querySelector('.navbar');
+                var navHeight = navbar ? navbar.offsetHeight : 70;
+                var target = card || btn;
+                var targetRect = target.getBoundingClientRect();
+                var targetY = window.scrollY + targetRect.top - navHeight - 16;
+                window.scrollTo({ top: Math.max(0, targetY), behavior: 'smooth' });
             }
 
             btn.addEventListener('click', function () {
