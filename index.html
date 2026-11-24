@@ -743,14 +743,14 @@
         /* Labs grid */
         .labs-grid {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
+            grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr));
             gap: var(--space-6);
             margin-top: var(--space-8);
         }
 
         @media (max-width: 900px) {
             .labs-grid {
-                grid-template-columns: repeat(2, 1fr);
+                grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
             }
         }
 
@@ -758,6 +758,39 @@
             .labs-grid {
                 grid-template-columns: 1fr;
             }
+        }
+
+        /* Playlist Filter Chips (shown when groupByPlaylist: true) */
+        .labs-filter-chips {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: var(--space-2);
+            margin-top: var(--space-6);
+        }
+
+        .labs-filter-chip {
+            display: inline-block;
+            padding: 0.35rem 0.85rem;
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            border-radius: var(--radius-full);
+            font-size: 0.75rem;
+            font-family: var(--font-mono);
+            border: 1px solid var(--border-color);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+        }
+
+        .labs-filter-chip:hover {
+            border-color: var(--accent-primary);
+            color: var(--accent-primary);
+        }
+
+        .labs-filter-chip.active {
+            background: var(--accent-primary);
+            color: #fff;
+            border-color: var(--accent-primary);
         }
 
         /* Lab card */
@@ -1878,10 +1911,10 @@
             <div style="text-align: center;">
                 <h2 class="section-title reveal" style="margin-bottom: var(--space-6);">Labs &amp; Walkthroughs</h2>
                 <p class="reveal delay-100" style="font-size: var(--text-base); color: var(--text-secondary); margin-bottom: var(--space-2);">
-                    Hands-on Microsoft Entra ID security simulations I explain on YouTube.
+                    Hands-on Microsoft security simulations and awareness walkthroughs I explain on YouTube
                 </p>
-                <p class="reveal delay-200" style="font-size: var(--text-sm); color: var(--text-secondary); opacity: 0.7; margin-bottom: var(--space-6);">
-                    3 videos &nbsp;·&nbsp; 5 topics
+                <p id="labs-stats-line" class="reveal delay-200" style="font-size: var(--text-sm); color: var(--text-secondary); opacity: 0.7; margin-bottom: var(--space-6);">
+                    5 videos &nbsp;·&nbsp; 20 topics
                 </p>
 
                 <button id="labs-toggle-btn" aria-expanded="false" aria-controls="labs-expandable" class="reveal delay-300">
@@ -1899,7 +1932,7 @@
                         Real attack scenarios, the controls that stop them, and the lessons behind each one.
                     </p>
                     <p class="reveal delay-100" style="text-align: center; font-size: var(--text-sm); color: var(--text-secondary); opacity: 0.7; margin-bottom: 0;">
-                        All demos run in a Microsoft 365 E5 developer tenant. No client or production data is shown.
+                        All demos run in lab environments, including a Microsoft 365 E5 developer tenant. No client or production data is shown.
                     </p>
 
                     <!-- Video cards grid -->
@@ -2122,6 +2155,9 @@
         // ── Labs & Walkthroughs ──────────────────────────────────────
         (function () {
 
+            // ── Config ───────────────────────────────────────────────
+            var groupByPlaylist = false;
+
             // ── Data ─────────────────────────────────────────────────
             var LABS = [
                 {
@@ -2131,6 +2167,7 @@
                     thumb: 'Labs/risky-signin.jpeg',
                     thumbAlt: 'Thumbnail: I Simulated a Risky Sign-in (Then Blocked It with Entra ID)',
                     status: 'published',
+                    playlist: 'Microsoft Entra ID & IAM Explained',
                     problem: 'Attackers who steal credentials sign in from unusual places, and many organizations only notice after the damage is done.',
                     simulated: 'I triggered a risky sign-in against a test account, investigated it under Incidents & alerts in the Microsoft Defender XDR portal, then restricted sign-ins to Nigeria using Conditional Access with a Named Location.',
                     takeaway: 'The detect, investigate and contain loop, and location-based access control as a Zero Trust layer.',
@@ -2143,6 +2180,7 @@
                     thumb: 'Labs/office-only-ip.jpg',
                     thumbAlt: 'Thumbnail: Lock Microsoft 365 to Your Office IP (Conditional Access Demo)',
                     status: 'published',
+                    playlist: 'Microsoft Entra ID & IAM Explained',
                     problem: 'When company resources are reachable from anywhere, stolen credentials work from any country or network.',
                     simulated: 'I restricted Microsoft 365 access to the office network using Named Locations with trusted public IPs, for two scenarios: a single office, and a company with its HQ in Lagos and a branch in Abuja. Sign-ins from the office succeeded and sign-ins from anywhere else were blocked.',
                     takeaway: 'How network-location controls shrink the attack surface for single-site and multi-site organizations.',
@@ -2155,12 +2193,49 @@
                     thumb: 'Labs/entra-pim.jpg',
                     thumbAlt: 'Thumbnail: I Gave a Normal User Admin Power for 2 Hours (Entra PIM Demo)',
                     status: 'published',
+                    playlist: 'Microsoft Entra ID & IAM Explained',
                     problem: 'Standing admin accounts with 24/7 admin rights are high-value targets. If one is phished or compromised, the attacker gets full control.',
                     simulated: 'Using Privileged Identity Management, I made a standard user eligible for the Helpdesk Administrator role, activated it for 2 hours to reset another user\'s password, and watched the role revoke automatically when the time expired. I also explained how User Administrator, Billing Administrator and Security Administrator roles can be delegated the same way.',
                     takeaway: 'Least privilege and just-in-time access: admin rights exist only when needed.',
                     tags: ['Entra PIM', 'Just-in-Time Access', 'Least Privilege', 'Privileged Roles']
+                },
+                {
+                    id: 'lab-4',
+                    title: 'Force Passwordless Sign-in in Microsoft 365 (Stop Password Attacks)',
+                    url: 'https://www.youtube.com/watch?v=0dL1044T1ac',
+                    thumb: 'Labs/passwordless.jpg',
+                    thumbAlt: 'Thumbnail: Force Passwordless Sign-in in Microsoft 365 (Stop Password Attacks)',
+                    status: 'published',
+                    playlist: 'Microsoft Entra ID & IAM Explained',
+                    problem: 'Brute force, password spray and credential stuffing all depend on passwords, which can be guessed, reused or leaked.',
+                    simulated: 'I demonstrated a passwordless sign-in with Microsoft Authenticator and what the attempt looks like from an attacker\'s side, then explained why passwords are the weak point, configured passwordless MFA in Microsoft Entra ID, and tested the sign-in with a newly configured user.',
+                    takeaway: 'Removing the password from the sign-in path takes away what password attacks rely on, and passwordless MFA gives stronger protection.',
+                    tags: ['Passwordless', 'Microsoft Authenticator', 'Entra ID', 'MFA', 'Password Spray']
+                },
+                {
+                    id: 'lab-5',
+                    title: 'Is This Download Link Safe? VirusTotal vs Sophos Intelix',
+                    url: 'https://www.youtube.com/watch?v=pWwSTXnyBKI',
+                    thumb: 'Labs/link-safety.jpg',
+                    thumbAlt: 'Thumbnail: Is This Download Link Safe? VirusTotal vs Sophos Intelix',
+                    status: 'published',
+                    playlist: 'Security Tutorials & Fixes',
+                    problem: 'Links shared on social media can lead to lookalike (typosquatted) websites and malware downloads.',
+                    simulated: 'After a free-book link was shared on a TikTok live, I verified it without clicking, using a manual check and then Sophos Intelix and VirusTotal. I explained typosquatting (URL hijacking), then compared a safe website with a known malicious sample link from a public malware repository on GitHub. VirusTotal flagged the malicious link and several security vendors confirmed it.',
+                    takeaway: 'Verify before you click, use more than one scanner, and understand how to read vendor detections.',
+                    tags: ['Typosquatting', 'VirusTotal', 'Sophos Intelix', 'Threat Intelligence', 'Security Awareness']
                 }
             ];
+
+            // ── Update Teaser Stats Dynamically ───────────────────────
+            var statsEl = document.getElementById('labs-stats-line');
+            if (statsEl) {
+                var uniqueTopics = new Set();
+                LABS.forEach(function (l) {
+                    (l.tags || []).forEach(function (t) { uniqueTopics.add(t); });
+                });
+                statsEl.innerHTML = LABS.length + ' videos &nbsp;·&nbsp; ' + uniqueTopics.size + ' topics';
+            }
 
             // ── Card builder ─────────────────────────────────────────
             function buildCard(lab) {
@@ -2234,7 +2309,7 @@
 
                 // Full card
                 var card =
-                    '<article class="lab-card" id="' + lab.id + '">' +
+                    '<article class="lab-card" id="' + lab.id + '" data-playlist="' + (lab.playlist || '') + '">' +
                         thumbHtml +
                         '<div class="lab-card-body">' +
                             '<span class="lab-status-badge ' + statusClass + '">' +
@@ -2251,13 +2326,7 @@
                 return card;
             }
 
-            // ── Render cards ─────────────────────────────────────────
-            var grid = document.getElementById('labs-grid');
-            if (grid) {
-                grid.innerHTML = LABS.map(buildCard).join('');
-            }
-
-            // ── Per-card story toggles ────────────────────────────────
+            // ── Per-card story toggle wiring ──────────────────────────
             function initStoryToggle(lab) {
                 var btn   = document.getElementById(lab.id + '-story-btn');
                 var panel = document.getElementById(lab.id + '-story-panel');
@@ -2270,7 +2339,6 @@
                         panel.setAttribute('aria-hidden', 'true');
                         btn.setAttribute('aria-expanded', 'false');
                         btn.querySelector('.lab-story-icon').style.transform = '';
-                        // restore label
                         btn.childNodes[0].textContent = 'Read the story ';
                     } else {
                         panel.classList.add('is-open');
@@ -2281,7 +2349,71 @@
                 });
             }
 
-            LABS.forEach(initStoryToggle);
+            // ── Render cards & chips ─────────────────────────────────
+            var grid = document.getElementById('labs-grid');
+
+            function renderCards(list) {
+                if (!grid) return;
+                grid.innerHTML = list.map(buildCard).join('');
+                list.forEach(initStoryToggle);
+
+                // Wire card hover glow for newly rendered cards
+                grid.querySelectorAll('.lab-card').forEach(function (card) {
+                    card.addEventListener('mousemove', function (e) {
+                        var rect = card.getBoundingClientRect();
+                        card.style.setProperty('--mouse-x', (e.clientX - rect.left) + 'px');
+                        card.style.setProperty('--mouse-y', (e.clientY - rect.top) + 'px');
+                    });
+                });
+            }
+
+            renderCards(LABS);
+
+            // ── Group by Playlist filter chips (active when groupByPlaylist === true) ──
+            if (groupByPlaylist && grid) {
+                var playlists = [];
+                LABS.forEach(function (lab) {
+                    if (lab.playlist && playlists.indexOf(lab.playlist) === -1) {
+                        playlists.push(lab.playlist);
+                    }
+                });
+
+                var filterBar = document.createElement('div');
+                filterBar.className = 'labs-filter-chips';
+
+                var allChip = document.createElement('button');
+                allChip.type = 'button';
+                allChip.className = 'labs-filter-chip active';
+                allChip.textContent = 'All';
+                filterBar.appendChild(allChip);
+
+                var chipButtons = [allChip];
+
+                playlists.forEach(function (pl) {
+                    var chip = document.createElement('button');
+                    chip.type = 'button';
+                    chip.className = 'labs-filter-chip';
+                    chip.textContent = pl;
+                    filterBar.appendChild(chip);
+                    chipButtons.push(chip);
+                });
+
+                grid.parentNode.insertBefore(filterBar, grid);
+
+                chipButtons.forEach(function (btn) {
+                    btn.addEventListener('click', function () {
+                        chipButtons.forEach(function (b) { b.classList.remove('active'); });
+                        btn.classList.add('active');
+                        var selected = btn.textContent;
+                        if (selected === 'All') {
+                            renderCards(LABS);
+                        } else {
+                            var filtered = LABS.filter(function (l) { return l.playlist === selected; });
+                            renderCards(filtered);
+                        }
+                    });
+                });
+            }
 
             // ── Section-level toggle ──────────────────────────────────
             var sectionBtn   = document.getElementById('labs-toggle-btn');
